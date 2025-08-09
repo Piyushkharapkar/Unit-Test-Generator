@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestGenius AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-dark.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #4c7cf3;
+            --secondary: #6366f1;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --darker: #020617;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --glass: rgba(30, 41, 59, 0.8);
+            --glass-border: rgba(148, 163, 184, 0.2);
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(76, 124, 243, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            animation: backgroundFloat 20s ease-in-out infinite;
+        }
+
+        @keyframes backgroundFloat {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.1) rotate(2deg);
+                opacity: 1;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Header */
+        .hero-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideUp 0.8s ease;
+        }
+
+        .hero-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(76, 124, 243, 0.3);
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        .hero-icon i {
+            color: white;
+            font-size: 2rem;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .hero-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Modern Card Styles */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(148, 163, 184, 0.3);
+        }
+
+        /* Statistics Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-step {
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-header i {
+            color: var(--accent);
+            font-size: 1.25rem;
+        }
+
+        /* Auth Section */
+        .auth-section {
+            display: flex;
+            justify-content: center;
+            animation: fadeIn 1s ease 0.5s both;
+        }
+
+        .auth-section .card {
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .auth-section .github-icon {
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .auth-section p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Modern Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(76, 124, 243, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(76, 124, 243, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:disabled {
+            background: var(--text-muted);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* List Items */
+        .list-container {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .list-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .list-item:hover {
+            background: #334155;
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .repo-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .repo-item i {
+            color: var(--accent);
+            font-size: 1rem;
+        }
+
+        .repo-item .repo-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .repo-item .repo-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .file-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            border-radius: 3px;
+        }
+
+        .file-item i {
+            color: var(--warning);
+            font-size: 1rem;
+        }
+
+        .summary-item {
+            border-left: 3px solid var(--primary);
+            background: linear-gradient(135deg, rgba(76, 124, 243, 0.05), rgba(6, 182, 212, 0.05));
+            transition: all 0.3s ease;
+        }
+
+        .summary-item:hover {
+            background: linear-gradient(135deg, rgba(76, 124, 243, 0.1), rgba(6, 182, 212, 0.1));
+            border-left-color: var(--accent);
+        }
+
+        /* Code Block */
+        .code-block pre {
+            background: var(--darker) !important;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Floating particles */
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(76, 124, 243, 0.3);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg);
+                opacity: 0.7;
+            }
+            50% { 
+                transform: translateY(-20px) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.5s ease both; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .hero-header h1 { font-size: 2rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="floating-particles" id="floating-particles"></div>
+
+    <div class="container">
+        <!-- Hero Header -->
+        <div class="hero-header">
+            <div class="hero-icon">
+                <i class="fas fa-code"></i>
+            </div>
+            <h1>TestGenius AI</h1>
+            <p class="hero-subtitle">Transform your codebase into comprehensive test suites with intelligent AI-powered analysis and generation</p>
+        </div>
+
+        <!-- Auth Section -->
+        <div id="auth-section" class="auth-section">
+            <div class="card">
+                <i class="fab fa-github github-icon"></i>
+                <p>Connect your GitHub account to unlock the power of AI-driven test generation for your repositories</p>
+                <a id="github-auth-link" href="http://127.0.0.1:8000/api/github/login/" class="btn btn-primary">
+                    <i class="fab fa-github"></i>
+                    Connect GitHub Account
+                </a>
+            </div>
+        </div>
+
+        <!-- Main App Container -->
+        <div id="app-container" class="hidden">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="repos-count">3</div>
+                    <div class="stat-label">Repositories</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="files-count">0</div>
+                    <div class="stat-label">Files Selected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="test-summaries-count">0</div>
+                    <div class="stat-label">Test Summaries</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-step">
+                        <i class="fas fa-sparkles"></i>
+                        <span id="current-step">Repos</span>
+                    </div>
+                    <div class="stat-label">Current Step</div>
+                </div>
+            </div>
+
+            <!-- Repositories Section -->
+            <div class="card">
+                <div class="section-header">
+                    <i class="fas fa-code-branch"></i>
+                    <h2>Your Repositories</h2>
+                </div>
+                <div class="list-container" id="repos-container"></div>
+            </div>
+
+            <!-- File Tree Section -->
+            <div id="file-tree" class="card hidden">
+                <div class="section-header">
+                    <i class="fas fa-folder-open"></i>
+                    <h2>Files in <span id="repo-name"></span></h2>
+                </div>
+                <div class="list-container" id="files-container"></div>
+                <div style="margin-top: 2rem; text-align: center;">
+                    <button id="generate-summaries-btn" class="btn btn-secondary" disabled>
+                        <i class="fas fa-magic"></i>
+                        Generate Test Case Summaries
+                    </button>
+                </div>
+            </div>
+
+            <!-- Summaries Section -->
+            <div id="summaries-section" class="card hidden">
+                <div class="section-header">
+                    <i class="fas fa-list-check"></i>
+                    <h2>Test Case Summaries</h2>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Click on any summary to generate the complete test code</p>
+                <div class="list-container" id="summaries-container"></div>
+            </div>
+
+            <!-- Generated Code Section -->
+            <div id="code-section" class="card code-block hidden">
+                <div class="section-header">
+                    <i class="fas fa-code"></i>
+                    <h2>Generated Test Case</h2>
+                </div>
+                <pre><code id="generated-code" class="language-python"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        // Create floating particles
+        function createFloatingParticles() {
+            const container = document.getElementById('floating-particles');
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createFloatingParticles();
+
+            // DOM element references
+            const githubAuthLink = document.getElementById('github-auth-link');
+            const appContainer = document.getElementById('app-container');
+            const reposContainer = document.getElementById('repos-container');
+            const fileTree = document.getElementById('file-tree');
+            const filesContainer = document.getElementById('files-container');
+            const repoNameSpan = document.getElementById('repo-name');
+            const generateSummariesBtn = document.getElementById('generate-summaries-btn');
+            const summariesSection = document.getElementById('summaries-section');
+            const summariesContainer = document.getElementById('summaries-container');
+            const codeSection = document.getElementById('code-section');
+            const generatedCodeBlock = document.getElementById('generated-code');
+            const reposCount = document.getElementById('repos-count');
+            const filesCount = document.getElementById('files-count');
+            const testSummariesCount = document.getElementById('test-summaries-count');
+            const currentStep = document.getElementById('current-step');
+
+            let accessToken = null;
+            let selectedFiles = [];
+            let currentRepoOwner = '';
+            let currentRepoName = '';
+
+            // Check for access token in localStorage first
+            accessToken = localStorage.getItem('github_access_token');
+
+            // Check for a GitHub authorization code in the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+
+            // If we have an authorization code from GitHub, exchange it for an access token
+            if (code && !accessToken) {
+                // Remove the code from the URL for security
+                window.history.replaceState({}, document.title, window.location.origin);
+
+                // Make a POST request to the backend's new token endpoint
+                fetch('http://127.0.0.1:8000/api/github/token/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code: code })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.access_token) {
+                            accessToken = data.access_token;
+                            localStorage.setItem('github_access_token', accessToken);
+                            // Now that we have the token, proceed with the app
+                            document.getElementById('auth-section').classList.add('hidden');
+                            appContainer.classList.remove('hidden');
+                            listRepositories();
+                        } else {
+                            console.error('Failed to get access token:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during token exchange:', error);
+                    });
+            } else if (accessToken) {
+                // If an access token already exists, proceed directly
+                document.getElementById('auth-section').classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                listRepositories();
+            }
+
+            // Centralized function for all API calls
+            async function apiFetch(endpoint, method = 'GET', body = null) {
+                const headers = { 'Authorization': `Bearer ${accessToken}` };
+                if (method === 'POST') {
+                    headers['Content-Type'] = 'application/json';
+                }
+
+                const options = { method, headers };
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+
+                const response = await fetch(`http://127.0.0.1:8000/api/${endpoint}`, options);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.statusText}`);
+                }
+                return response.json();
+            }
+
+            async function listRepositories() {
+                try {
+                    const repos = await apiFetch('repos/');
+                    reposContainer.innerHTML = '';
+                    reposCount.textContent = repos.length;
+                    currentStep.textContent = 'Repos';
+
+                    repos.forEach((repo, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'list-item repo-item';
+                        div.style.animationDelay = `${index * 0.1}s`;
+                        div.innerHTML = `
+                            <i class="fas fa-code-branch"></i>
+                            <div>
+                                <div class="repo-name">${repo.name}</div>
+                                ${repo.description ? `<div class="repo-desc">${repo.description}</div>` : ''}
+                            </div>
+                        `;
+                        div.addEventListener('click', () => {
+                            listRepoFiles(repo.owner, repo.name);
+                        });
+                        reposContainer.appendChild(div);
+                    });
+                } catch (error) {
+                    console.error('Error fetching repositories:', error);
+                }
+            }
+
+            async function listRepoFiles(owner, name) {
+                currentRepoOwner = owner;
+                currentRepoName = name;
+                repoNameSpan.textContent = name;
+                fileTree.classList.remove('hidden');
+                fileTree.classList.add('fade-in');
+                summariesSection.classList.add('hidden');
+                codeSection.classList.add('hidden');
+                filesContainer.innerHTML = '';
+                selectedFiles = [];
+                generateSummariesBtn.disabled = true;
+                filesCount.textContent = '0';
+                testSummariesCount.textContent = '0';
+                currentStep.textContent = 'Files';
+
+                try {
+                    const files = await apiFetch(`files/${owner}/${name}/`);
+                    const fileItems = files.filter(item => item.type === 'file');
+
+                    fileItems.forEach((item, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'list-item file-item';
+                        div.style.animationDelay = `${index * 0.05}s`;
+
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        checkbox.value = item.path;
+
+                        const icon = document.createElement('i');
+                        icon.className = 'fas fa-file-code';
+
+                        const span = document.createElement('span');
+                        span.textContent = item.name;
+
+                        div.appendChild(checkbox);
+                        div.appendChild(icon);
+                        div.appendChild(span);
+
+                        checkbox.addEventListener('change', (e) => {
+                            if (e.target.checked) {
+                                selectedFiles.push(item.path);
+                            } else {
+                                selectedFiles = selectedFiles.filter(p => p !== item.path);
+                            }
+                            generateSummariesBtn.disabled = selectedFiles.length === 0;
+                            filesCount.textContent = selectedFiles.length;
+                        });
+
+                        filesContainer.appendChild(div);
+                    });
+                } catch (error) {
+                    console.error('Error fetching files:', error);
+                }
+            }
+
+            generateSummariesBtn.addEventListener('click', async () => {
+                if (selectedFiles.length === 0) return;
+
+                const originalText = generateSummariesBtn.innerHTML;
+                generateSummariesBtn.innerHTML = '<span class="loading-spinner"></span> Generating...';
+                generateSummariesBtn.disabled = true;
+                currentStep.textContent = 'Analysis';
+
+                let codeContent = '';
+                for (const filePath of selectedFiles) {
+                    try {
+                        const fileData = await apiFetch(`files/${currentRepoOwner}/${currentRepoName}/${filePath}`);
+                        if (fileData.content) {
+                            codeContent += `// File: ${filePath}\n${fileData.content}\n\n`;
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching file ${filePath}:`, error);
+                    }
+                }
+
+                if (!codeContent) {
+                    alert('No code content found in selected files.');
+                    generateSummariesBtn.innerHTML = originalText;
+                    generateSummariesBtn.disabled = false;
+                    return;
+                }
+
+                try {
+                    const response = await apiFetch('generate/summaries/', 'POST', { code_content: codeContent });
+                    summariesContainer.innerHTML = '';
+                    summariesSection.classList.remove('hidden');
+                    summariesSection.classList.add('fade-in');
+                    codeSection.classList.add('hidden');
+                    testSummariesCount.textContent = response.summaries.length;
+                    currentStep.textContent = 'Summaries';
+
+                    response.summaries.forEach((summary, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'list-item summary-item';
+                        div.style.animationDelay = `${index * 0.1}s`;
+                        div.textContent = summary;
+                        div.addEventListener('click', () => {
+                            generateDetailedCode(codeContent, summary);
+                        });
+                        summariesContainer.appendChild(div);
+                    });
+                } catch (error) {
+                    console.error('Error generating summaries:', error);
+                } finally {
+                    generateSummariesBtn.innerHTML = originalText;
+                    generateSummariesBtn.disabled = false;
+                }
+            });
+
+            async function generateDetailedCode(codeContent, summary) {
+                currentStep.textContent = 'Code Gen';
+                
+                try {
+                    const response = await apiFetch('generate/code/', 'POST', {
+                        code_content: codeContent,
+                        summary: summary,
+                        framework: 'unittest'
+                    });
+
+                    generatedCodeBlock.textContent = response.test_code;
+                    Prism.highlightElement(generatedCodeBlock);
+                    codeSection.classList.remove('hidden');
+                    codeSection.classList.add('fade-in');
+                    codeSection.scrollIntoView({ behavior: 'smooth' });
+                    currentStep.textContent = 'Complete';
+                } catch (error) {
+                    console.error('Error generating detailed code:', error);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
