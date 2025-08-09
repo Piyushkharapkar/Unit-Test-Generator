@@ -138,9 +138,6 @@ The backend exposes the following REST API endpoints:
 
   - **No repositories shown after re-connecting**: When you manually revoke a GitHub token, your frontend's `localStorage` still holds the old, invalid token. Clear your browser's local storage to force a new authentication flow.
 
-## 📄 License
-
-This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
